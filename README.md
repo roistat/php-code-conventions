@@ -397,6 +397,8 @@ if (strlen($foo = json_encode($bar)) > 100) {
 }
 ```
 
+### Нельзя использовать константы через метод `constant`
+
 ## **Работа с массивами**
 
 ### Для конкатенации массивов используем array_merge, array_replace и прочие методы
@@ -449,11 +451,33 @@ if (isset($users[1])) {
 }
 ```
 
-### Ассоциативный массив мы используем как hashmap
-То есть не применяем разные встроенные в PHP инструменты, например, сортировки ассоциативных массивов.
-TO-DO я сам не понял
-- не сортировать ключи и значения
-- не мешать числовые и строковые ключи
+### Нельзя сортировать ассоциативные массивы
+
+**Неправильно:**
+```php
+$arr = [
+    'project_key' => 'foo',
+    'key' => 'bar',
+    'user_id' => 300,
+];
+
+uasort($arr);
+```
+
+### Нельзя смешивать в массиве строковые и числовые ключи
+
+**Неправильно:**
+```php
+$arr = [
+    'project_key' => 'foo',
+    'key' => 'bar',
+    'user_id' => 300,
+    1 => 'value1',
+    2 => 'value2',
+];
+
+$arr[3] = 'value3';
+```
 
 ## **Работа со строками**
 
@@ -1131,68 +1155,147 @@ public function someMethod() {
 
 **Правильно:**
 ```php
+public function deleteApprovedUsers() {
+    $users = $this->loadApprovedUsers();
+    foreach ($users as $user) {
+        // ...
+    }
+}
 
+public function loadApprovedUsers() {
+    $users = $repository->loadUsers();
+    array_filter($users, function($user) {
+        return $user->is_approved;
+    });
+}
 ```
+
 **Неправильно:**
 ```php
+public function deleteApprovedUsers() {
+    // load users filter them by approval
+    $users = $repository->loadUsers();
+    array_filter($users, function($user) {
+        return $user->is_approved;
+    });
 
+    foreach ($users as $user) {
+        // ...
+    }
+}
 ```
 
-### Допустимо оставлять комментарии к сложным алгоритмам или вынужденным хакам
-TO-DO аналитические алгоритмы должны иметь ссылки на вики
+### Вынужденные хаки должны быть помечены комментариями
+Лучше соблюдать одинаковый формат в рамках проекта
 
-- хак
-- туду
-
-### Допустимо в редких ситуациях написать описание метода в phpdoc
-Только если в названии нельзя отразить все особенности бизнес логики.
-TO-DO такие исключительные ситуации точно должны быть в кодеконв?
-- алгоритм
-
-### В датапровайдерах тестов надо писать комментарий к структуре отдаваемого массива значений
 **Правильно:**
 ```php
-public function isEmailAddressData() {
-    return [
-        //    email               isValid
-        ['test@test.ru',            true ],
-        ['invalidEmail',            false],
-        // ...
-    ]
+function loadUsers() {
+    $result = $repository->loadUsers();
+    // hack: status field was removed from storage 
+    foreach ($result as $user) {
+        $user->status = 'active';
+    }
+    // hack end
+    return $result;
 }
 ```
-**Неправильно:**
+
+### Проприетарные алгоритмы должны иметь ссылки на вики
+
+**Правильно:**
 ```php
-public function isEmailAddressData() {
-    return [
-        ['test@test.ru',            true ],
-        // ...
-    ]
+/**
+ * https://en.wikipedia.org/wiki/Quicksort
+ */
+function quickSort(array $arr) {
+    // ...
 }
 ```
-TO-DO это относится к тестам, а не комментариям
+
+### При разработке прототипа допустимо помечать участки кода @todo
+
+**Правильно:**
+```php
+function loadUsers() {
+    $result = $repository->loadUsers();
+    // @todo: delete the hack when field will be restored
+    // hack: status field was removed from storage
+    foreach ($result as $user) {
+        $user->status = 'active';
+    }
+    // hack end
+    return $result;
+}
+```
 
 ## **Работа с исключениями**
-### Все кидаемые и отлавливаемые исключения должны наследоваться от Exception\Base. Встроенные в PHP исключения не используем.
-TO-DO возможно правило не общее
+### На каждом уровне бизнес логики (проект, компонент, библиотека) должно быть абстрактное базовое исключение
 
 ### Исключения сторонних библиотек должны быть перехвачены сразу
 Далее либо обработаны, либо на их основании должно бросаться свое исключение.
-TO-DO пример
+
+**Правильно:**
+```php
+public function function loadUsers() {
+    try {
+        $objects = $repository->loadObjects();
+    } catch (ORMLib\Exception\AbstractException $e) {
+        $this->_logger->logException($e);
+        return [];
+    }
+    //..
+}
+```
 
 ### По умолчанию тексты исключений не должны показываться пользователю
-Они предназначены для логирования и дебага. Текст исключения можно показать пользователю, если оно явно для этого предназначено: реализует интерфейс `HumanReadable`
-TO-DO переформулировать, пока это частное правило роистата
-TO-DO message в исключениях не должен отображаться пользователю
-TO-DO можно показывать
+Они предназначены для логирования и дебага. Текст исключения можно показать пользователю, если оно явно для этого предназначено: например, реализует интерфейс `HumanReadableInterface`
+
+```php
+interface HumanReadableInterface {
+    
+    /**
+     * @return string
+     */
+    public function getUserMessage(): string;
+}
+
+public function handleException(\Throwable $exception) {
+    if ($exception instanceof HumanReadableInterface) {
+        echo $exception->getUserMessage();
+        return;
+    }
+    // ...
+}
+```
 
 ## **Работа с внешним хранилищем данных**
 ### Нельзя делать запросы к внешнему хранилищу внутри цикла с заведомо большим кол-вом итераций
-TO-DO пример
+
+**Правильно:**
+```php
+$users = loadUsers();
+$projects = loadProjects();
+$indexedProjects = [];
+foreach ($projects as $project) {
+    $indexedProjects[$project->user_id][] = $project;
+}
+foreach ($users as $user) {
+    $userProjects = $indexedProjects[$user->id];
+}
+```
+
+**Неправильно:**
+```php
+$users = loadUsers();
+foreach ($users as $user) {
+    $userProjects = loadUserProjects($user);
+    // ...
+}
+```
 
 ### Для каждой записи в хранилище должно быть понятна дата ее создания
-То есть должна быть колонка `date/creation_date`. Или должен быть зависимый объект, у которого есть такая колонка. Редактируемые записи должны иметь и дату редактирования: `update_date` или `modify_date`.
-TO-DO насчет зависимого объекта не понял
+То есть должна быть колонка `date/creation_date`. Или должен быть зависимый объект (связь 1 к 1), у которого есть такая колонка. Редактируемые записи должны иметь и дату редактирования: `update_date` или `modification_date`.
 
 ## **Особенности Pull Request (PR)**
 ### PR должен содержать как можно меньше строк кода
@@ -1221,19 +1324,13 @@ TO-DO написать про разделение бизнес логики:
 
 ## **Работа с шаблонами**
 
-### В шаблонах не должны вызываться методы объектов
-Исключение допускаются в случае простейших геттеров и их производных, когда на экран выводится какое-то свойство объекта.
-TO-DO надо определить, что такое простейший геттер и его производное
-
-### Нельзя использовать константы через метод `constant`
-Если нужно сравнить переменную с константой, то вместо этого нужно передавать в шаблон `boolean` переменную. 
-TO-DO должно быть запрещено везде, к шаблонам не относится
+### В шаблонах не должны вызываться методы объектов (геттеры не в счет)
+Все необходимые данные должны быть загружены до рендера и переданы в виде параметров шаблона.
 
 ## **Работа с литералами**
 
 ### Назначение всех числовых литералов должно быть понятным из контекста
-Они должны быть или вынесены в переменную, или сравнивать с переменной, или передаваться на вход методу с понятной сигнатурой. В коде должен присутствовать в явном виде ответ: `за что отвечает это число и почему оно именно такое?`
-TO-DO переменную или константу + пример
+Они должны быть или вынесены в переменную или константу, или сравниваться с переменной, или передаваться на вход методу с понятной сигнатурой. В коде должен присутствовать в явном виде ответ: `за что отвечает это число и почему оно именно такое?`
 
 **Правильно:**
 ```php
@@ -1281,15 +1378,26 @@ if ($project) {}
 
 **Правильно:**
 ```php
+class Bill {
+    /**
+     * @type string
+     */
+    public $sum;
+
+    /**
+     * @type string
+     */
+    public $comment;
+}
+
 if ($project === null) {} // $project is object
-if ((int)$bill->sum === 0) {} // $bill->sum is string because $bill is Mapper object
-if ($user->email === '') {}
+if ((int)$bill->sum === 0) {} // $bill->sum is string
+if ($bill->comment === '') {}
 ```
-TO-DO добавить в пример сами объекты, так мы проясним типизацию. комментарии убрать
 
 **Неправильно:**
 ```php
-if (!$user->email) {}
+if (!$bill->comment) {}
 if ($bill->sum == 0) {}
 ```
 
@@ -1347,13 +1455,14 @@ if (!is_numeric($value) && !is_object($value)) {}
 if (preg_match($pattern, $subject)) { /* handle success */ }
 if (!preg_match($pattern, $subject)) { /* handle not success */ }
 if (preg_match($pattern, $subject) === false) { /* handle error */ }
+if (strpos($search, $text) === false) { /* handle not success */ }
 ```
 
 **Неправильно:**
 ```php
 if (preg_match($pattern, $subject) === 1) {}
+if (!strpos($search, $text)) {}
 ```
-TO-DO добавить пример про strpos
 
 ## **Работа с тернарными операторами**
 
@@ -1390,8 +1499,33 @@ $contact = $this->loadContactByPhone() ?: $this->loadContactByEmail() ?: $this->
 ```
 
 ## **Про тесты**
+
 ### Тесты являются таким же production кодом, как и любой другой код
 Они должны быть написаны с соблюдением соглашений, описанных в этом документе.
+
+### В источниках данных для тестов надо писать комментарий к структуре отдаваемого массива значений
+
+**Правильно:**
+```php
+public function isEmailAddressData() {
+    return [
+        //    email               isValid
+        ['test@test.ru',            true ],
+        ['invalidEmail',            false],
+        // ...
+    ]
+}
+```
+
+**Неправильно:**
+```php
+public function isEmailAddressData() {
+    return [
+        ['test@test.ru',            true ],
+        // ...
+    ]
+}
+```
 
 ## **Использование chain-объектов**
 ### Метод с большим количеством необязательных параметров (А) может быть заменен chain-объектом
@@ -1428,25 +1562,26 @@ new $sender($method, $url)->body($body)->retries(10)->timeout(25)->send();
 ```
 
 ## **Работа со скриптами**
-### Любой скрипт, который изменяет данные, должен иметь `confirm` перед выполнением действий с данными и `debug` по результатам работы
+### Любой скрипт, который изменяет данные, должен иметь подтверждение перед выполнением действий с данными и `debug` по результатам работы
 
 **Правильно:**
 ```php
-$orderCount = $projectRepo->countOrdersByFilterAndDateTime([], $timePeriod->startDate(), $timePeriod->endDate());
-if (!Cli::confirm("Do you want to delete {$orderCount} order(s) for period: {$period}")) {
-    Cli::out('Delete canceled, exit');
+// cli/delete_old_projects.php
+$totalProjects = $repository->countOldProjects();
+if (!confirm("Do you want to delete {$totalProjects} project(s)?")) {
+    echo 'Delete canceled, exit';
     exit(1);
 }
-             
-$dateCondition = $projectRepo->getDateConditionFromTimePeriod('creation_date', $timePeriod);
-$projectRepo->updateOrders(['is_deleted' => '1'], $dateCondition, $dateFrom, $dateTo);
-Cli::out("Deleted {$orderCount} order(s) for period: {$period}");
+
+$repository->deleteOldProjects();
+
+function confirm(string $question): bool {
+    return readline("{$question} [y/n]: ") === 'y'
+}
 ```
 
 **Неправильно:**
 ``` php
-$dateCondition = $projectRepo->getDateConditionFromTimePeriod('creation_date', $timePeriod);
-$projectRepo->updateOrders(['is_deleted' => '1'], [$dateCondition], $dateFrom, $dateTo);
-
+// cli/delete_old_projects.php
+$repository->deleteOldProjects();
 ```
-TO-DO абстрактный пример
