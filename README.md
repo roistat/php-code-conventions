@@ -430,6 +430,7 @@ $foo = false; $bar = true;
 ```php
 function loadUsers(array $ids) {
     $usersIds = $ids;
+    // ...
 }
 ```
 
@@ -619,7 +620,7 @@ $string = 'Object with type "' . $object->getType() . '" has been removed';
 
 ### Дата всегда должна быть представлена DateTime, интервал как DateInterval
 
-### Если мы не можем работать с объектом (например, надо сохранить значение в БД), то работаем со строкой, включающей временную зону. И только если строку почему-то нельзя использовать, тогда уже с `int`.
+### Если мы не можем работать с объектом (например, надо сохранить значение в БД), то работаем со строкой без временной зоны (всегда используем UTC0). И только если строку почему-то нельзя использовать, тогда уже с `int`.
 
 **Правильно:**
 ```php
@@ -630,7 +631,7 @@ class User {
     public $creation_date;
 }
 
-$user->creation_date = '2018-03-28T02:52:24+03:00';
+$user->creation_date = '2018-01-18 12:54:11';
 ```
 
 **Неправильно:**
@@ -725,42 +726,45 @@ $user = new UserEntity();
 
 ## **Работа с методами**
 
-### Должна быть использована максимально возможная типизация.
+### Должна быть использована максимально возможная типизация для вашей версии PHP. Все параметры и их типы должны быть описаны в phpdoc. Возвращаемое значение тоже.
 
 **Правильно:**
 ```php
-function storeUser(string $name): ?User {
+// для PHP 7.1
+/**
+ * @param int $id
+ * @param string $name
+ * @param array $tags
+ * @return User|null
+ */
+function storeUser(int $id, string $name, array $tags = []): ?User {
+    // ...
+}
+
+// для PHP 5.6
+// без строгой типизации возвращаемых типов любой метод
+// может вернуть null, так что можно его не указывать в phpdoc
+/**
+ * @param int $id
+ * @param string $name
+ * @param array $tags
+ * @return User
+ */
+function storeUser($id, $name, array $tags = []) {
     // ...
 }
 ```
 
 **Неправильно:**
 ```php
-function storeUser($name) {
+/**
+ * @param $id
+ * @param $name
+ * @param $tags
+ * @return mixed
+ */
+function storeUser($id, $name, $tags = []) {
     // ...
-}
-```
-
-### Все параметры и их типы должны быть описаны в phpdoc. Возвращаемое значение тоже.
-**Правильно:**
-```php
-/**
- * @param string $controllerName
- * @param string $actionName
- * @return int
- */
-function runAction($controllerName, $actionName) {
-    return 0;
-}
-```
-
-**Неправильно:**
-```php
-/**
- * @param $controllerName
- */
-function runAction($controllerName, $actionName) {
-    return 0;
 }
 ```
 
