@@ -540,7 +540,39 @@ function getProjectKey(array $requestData) {
 }
 ```
 
-### Для проверки наличия значения по индексу в обычных (не ассоциативных) массивах используем count($array) > N
+### Ассоциативный массив мы используем как hashmap
+То есть не применяем разные встроенные в PHP инструменты. Приведем несколько очевидных примеров (однако, правило ими не исчерпывается):
+
+#### Нельзя сортировать ассоциативные массивы
+
+**Неправильно:**
+```php
+$arr = [
+    'project_key' => 'foo',
+    'key' => 'bar',
+    'user_id' => 300,
+];
+
+uasort($arr);
+```
+
+#### Нельзя смешивать в массиве строковые и числовые ключи
+
+**Неправильно:**
+```php
+$arr = [
+    'project_key' => 'foo',
+    'key' => 'bar',
+    'user_id' => 300,
+    1 => 'value1',
+    2 => 'value2',
+];
+
+$arr[3] = 'value3';
+```
+
+#### Для проверки наличия значения по индексу в обычных (не ассоциативных) массивах используем count($array) > N
+
 **Правильно:**
 ```php
 if (count($users) > 1) {
@@ -555,34 +587,6 @@ if (array_key_exists(1, $users)) {
 if (isset($users[1])) {
     // ...
 }
-```
-
-### Нельзя сортировать ассоциативные массивы
-
-**Неправильно:**
-```php
-$arr = [
-    'project_key' => 'foo',
-    'key' => 'bar',
-    'user_id' => 300,
-];
-
-uasort($arr);
-```
-
-### Нельзя смешивать в массиве строковые и числовые ключи
-
-**Неправильно:**
-```php
-$arr = [
-    'project_key' => 'foo',
-    'key' => 'bar',
-    'user_id' => 300,
-    1 => 'value1',
-    2 => 'value2',
-];
-
-$arr[3] = 'value3';
 ```
 
 ## **Работа со строками**
@@ -1171,7 +1175,7 @@ function getObjectCategories($object): ?array {
 ```
 
 ### Возвращаемая переменная обычно $result
-Если у вас метод `getUsers`, то не надо внутри метода возвращаемую переменную называть `$users`. В любом месте в методе должно быть понятно, где вы оперируете результатом, а где локальными переменными.
+Если у вас метод `loadUsers`, то не надо внутри метода возвращаемую переменную называть `$users`. В любом месте в методе должно быть понятно, где вы оперируете результатом, а где локальными переменными.
 
 **Правильно:**
 ```php
@@ -1337,7 +1341,7 @@ function loadUsers() {
 }
 ```
 
-### Проприетарные алгоритмы должны иметь ссылки на вики
+### Готовые алгоритмы, взятые из внешнего источника, должны быть помечены ссылкой на источник
 
 **Правильно:**
 ```php
@@ -1345,6 +1349,13 @@ function loadUsers() {
  * https://en.wikipedia.org/wiki/Quicksort
  */
 function quickSort(array $arr) {
+    // ...
+}
+
+/**
+ * https://habrahabr.ru/post/320140/
+ */
+function generateRandomMaze() {
     // ...
 }
 ```
@@ -1373,12 +1384,17 @@ function loadUsers() {
 
 **Правильно:**
 ```php
-public function function loadUsers() {
+namespace Service\Facebook;
+
+use Exception;
+use FacebookAds;
+
+public function function requestData() {
+    // ...
     try {
-        $objects = $repository->loadObjects();
-    } catch (ORMLib\Exception\AbstractException $e) {
-        $this->_logger->logException($e);
-        return [];
+        $objects = $facebookAds->requestData($params);
+    } catch (FacebookAds\Exception\Exception $e) {
+        throw new Exception\ExternalServiceError("Facebook error: {$e->getMessage()}");
     }
     //..
 }
@@ -1414,9 +1430,15 @@ $users = loadUsers();
 $projects = loadProjects();
 $indexedProjects = [];
 foreach ($projects as $project) {
+    if (!array_key_exists($project->user_id, $indexedProjects)) {
+        $indexedProjects[$project->user_id] = [];
+    }
     $indexedProjects[$project->user_id][] = $project;
 }
 foreach ($users as $user) {
+    if (!array_key_exists($user->id, $indexedProjects)) {
+        continue;
+    }
     $userProjects = $indexedProjects[$user->id];
 }
 ```
@@ -1463,12 +1485,12 @@ foreach ($users as $user) {
 ```php
 
 if ($object->is_deleted === 1) {
-  // ...
+    // ...
 }
  
 $apiMaxRetryLimit = 5;
 for ($i = 0; $i < $apiMaxRetryLimit; $i++) {
-  // ...
+    // ...
 } 
 ```
 
@@ -1476,11 +1498,11 @@ for ($i = 0; $i < $apiMaxRetryLimit; $i++) {
 ```php
 $isOnlyDeleted = 1;
 if ($object->is_deleted === $isOnlyDeleted) {
-  // ...
+    // ...
 }
  
 for ($i = 0; $i < 5; $i++) {
-  // ...
+    // ...
 }
 ```
 
@@ -1489,43 +1511,59 @@ for ($i = 0; $i < 5; $i++) {
 
 **Правильно:**
 ```php
-if ($isResponseError) {} // $isResponseError = true
-if ($response->isError()) {} // isError method returns boolean
-if (count($userProjects) > 0) {}
-if (true) {}
+if ($isResponseError) { // $isResponseError = true
+    // ...
+}
+if ($response->isError()) { // isError method returns boolean
+    // ...
+}
+if (count($userProjects) > 0) {
+    // ...
+}
+if (true) {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-if (count($userProjects)) {}
-if ($project) {}
+if (count($userProjects)) {
+    // ...
+}
+if ($project) {
+    // ...
+}
 ```
 
 ### В сравнении не booelan переменных используется строгое сравнение с приведением типа (===) , автоматическое приведение не используется
 
 **Правильно:**
 ```php
-class Bill {
-    /**
-     * @type string
-     */
-    public $sum;
-
-    /**
-     * @type string
-     */
-    public $comment;
+if ($project === null) { // $project is an object
+    // ...
 }
-
-if ($project === null) {} // $project is object
-if ((int)$bill->sum === 0) {} // $bill->sum is string
-if ($bill->comment === '') {}
+if ((int)$request->postData('sum') === 100) {
+    // ...
+}
+if ($bill->comment === '') {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-if (!$bill->comment) {}
-if ($bill->sum == 0) {}
+if ($project) {
+    // ...
+}
+if ($request->postData('sum') == 100) {
+    // ...
+}
+if (!$request->postData('sum')) {
+    // ...
+}
+if (!$bill->comment) {
+    // ...
+}
 ```
 
 ### Автоматическое приведение типов запрещено только при (==), в остальных случаях (знаки >, <) наоборот рекомендуется
@@ -1533,32 +1571,56 @@ if ($bill->sum == 0) {}
 
 **Правильно:**
 ```php
-if ($request->get('is_something') > 0) {}
-if ($user->is_registered) {}
-if (!$user->is_registered) {}
+if ($request->get('is_something') > 0) {
+    // ...
+}
+if ($user->is_registered) {
+    // ...
+}
+if (!$user->is_registered) {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-if ((int)$request->get('is_something') > 0) {}
-if ((int)$request->get('is_something') === 1) {}
-if ((int)$user->is_registered === 0) {}
+if ((int)$request->get('is_something') > 0) {
+    // ...
+}
+if ((int)$request->get('is_something') === 1) {
+    // ...
+}
+if ((int)$user->is_registered === 0) {
+    // ...
+}
 ```
 
 #### Не надо сравнивать `boolean` с `true`/`false`
 
 **Правильно:**
 ```php
-if ($bill->isPaid()) {}
+if ($bill->isPaid()) {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-if ($bill->isPaid() == true) {}
-if ($bill->isPaid() !== false) {}
-if (!$bill->isPaid() === true) {}
-if (!(!$bill->isPaid() === true)) {}
-if ((bool)$phone->is_external === true) {}
+if ($bill->isPaid() == true) {
+    // ...
+}
+if ($bill->isPaid() !== false) {
+    // ...
+}
+if (!$bill->isPaid() === true) {
+    // ...
+}
+if (!(!$bill->isPaid() === true)) {
+    // ...
+}
+if ((bool)$phone->is_external === true) {
+    // ...
+}
 ```
 
 ### Проверять переменные надо на наличие позитивного вхождения, а не отсутствие негативного
@@ -1566,12 +1628,16 @@ if ((bool)$phone->is_external === true) {}
 
 **Правильно:**
 ```php
-if (is_string($value) && $value !== '') {}
+if (is_string($value) && $value !== '') {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-if (!is_numeric($value) && !is_object($value)) {}
+if (!is_numeric($value) && !is_object($value)) {
+    // ...
+}
 ```
 
 ### Если вы используете встроенную функцию PHP, которая возвращает `0`, `1` и, возможно, `false`, то при возможности результат ее работы используем в условии как `bool` без дополнительных сравнений
@@ -1579,16 +1645,28 @@ if (!is_numeric($value) && !is_object($value)) {}
 
 **Правильно:**
 ```php
-if (preg_match($pattern, $subject)) { /* handle success */ }
-if (!preg_match($pattern, $subject)) { /* handle not success */ }
-if (preg_match($pattern, $subject) === false) { /* handle error */ }
-if (strpos($search, $text) === false) { /* handle not success */ }
+if (preg_match($pattern, $subject)) { 
+    // handle success
+}
+if (!preg_match($pattern, $subject)) {
+    // handle not success
+}
+if (preg_match($pattern, $subject) === false) {
+    // handle error
+}
+if (strpos($search, $text) === false) {
+    // handle not success
+}
 ```
 
 **Неправильно:**
 ```php
-if (preg_match($pattern, $subject) === 1) {}
-if (!strpos($search, $text)) {}
+if (preg_match($pattern, $subject) === 1) {
+    // ...
+}
+if (!strpos($search, $text)) {
+    // ...
+}
 ```
 
 ## **Работа с тернарными операторами**
@@ -1630,7 +1708,7 @@ $contact = $this->loadContactByPhone() ?: $this->loadContactByEmail() ?: $this->
 ### Тесты являются таким же production кодом, как и любой другой код
 Они должны быть написаны с соблюдением соглашений, описанных в этом документе.
 
-### В источниках данных для тестов надо писать комментарий к структуре отдаваемого массива значений
+### В дата провайдерах для тестов надо писать комментарий к структуре отдаваемого массива значений
 
 **Правильно:**
 ```php
@@ -1693,14 +1771,14 @@ new $sender($method, $url)->body($body)->retries(10)->timeout(25)->send();
 
 **Правильно:**
 ```php
-// cli/delete_old_projects.php
-$totalProjects = $repository->countOldProjects();
-if (!confirm("Do you want to delete {$totalProjects} project(s)?")) {
+// cli/delete_items.php
+$totalItems = $repository->countItems();
+if (!confirm("Do you want to delete {$totalItems} item(s)?")) {
     echo 'Delete canceled, exit';
     exit(1);
 }
 
-$repository->deleteOldProjects();
+$repository->deleteItems();
 
 function confirm(string $question): bool {
     return readline("{$question} [y/n]: ") === 'y'
@@ -1709,6 +1787,6 @@ function confirm(string $question): bool {
 
 **Неправильно:**
 ``` php
-// cli/delete_old_projects.php
-$repository->deleteOldProjects();
+// cli/delete_items.php
+$repository->deleteItems();
 ```
