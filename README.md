@@ -523,12 +523,14 @@ $this->_callSomeFunc($bar = strlen($foo));
 ```php
 $foo = json_encode($bar);
 if (strlen($foo) > 100) {
+    // ...
 }
 ```
 
 **Неправильно:**
 ```php
 if (strlen($foo = json_encode($bar)) > 100) {
+    // ...
 }
 ```
 
