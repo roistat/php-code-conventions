@@ -109,14 +109,18 @@ finalizeData($data);
 
 **Правильно:**
 ```php
-if ($number >= 0) {}
+if ($number >= 0) {
+    // ...
+}
 $distance = $textService->levenshtein($text1, $text2);
 $urlParts = $urlService->parseUrl($url);
 ```
 
 **Неправильно:**
 ```php
-if (ctype_digit($number)) {}
+if (ctype_digit($number)) {
+    // ...
+}
 $distance = levenshtein($text1, $text2);
 $urlParts = parse_url($url);
 ```
@@ -129,7 +133,9 @@ $urlParts = parse_url($url);
  * @param string $message
  * @param string $date
  */
-function sendEmail($title, $message = null, $date = null) {}
+function sendEmail($title, $message = null, $date = null) {
+    // ...
+}
 
 // сообщение не было передано
 $object->sendEmail('Title', null, '2017-01-01');
@@ -142,7 +148,9 @@ $object->sendEmail('Title', '', '2017-01-01');
 
 **Правильно**
 ```php
-function deleteUsersByIds(array $ids = [], $someOption = false) {}
+function deleteUsersByIds(array $ids = [], $someOption = false) {
+    // ...
+}
 
 deleteUsersByIds([], true);
 ```
@@ -866,14 +874,22 @@ public function run() {
 
 **Правильно:**
 ```php
-public function loadItems() {}
-public function convertDataToObject(array $data) {}
+public function loadItems() {
+    // ...
+}
+public function convertDataToObject(array $data) {
+    // ...
+}
 ```
 
 **Неправильно:**
 ```php
-public function items() {}
-public function convertedDataObject(array $data) {}
+public function items() {
+    // ...
+}
+public function convertedDataObject(array $data) {
+    // ...
+}
 ```
 
 ### Методы названия, которых начинаются c `check` и `validate` должны кидать исключения и не возвращать никакие значения.
@@ -963,19 +979,25 @@ public function someMethod($projectName = null) {
 ### Трейты имеют постфикс Trait
 **Правильно:**
 ```php
-trait AjaxResponseTrait {}
+trait AjaxResponseTrait {
+    // ...
+}
 ```
 
 ### Интерфейсы имеют постфикс Interface
 **Правильно:**
 ```php
-interface ApplicationInterface {}
+interface ApplicationInterface {
+    // ...
+}
 ```
 
 ### Абстрактные классы имеют префикс Abstract
 **Правильно:**
 ```php
-abstract class AbstractApplication {}
+abstract class AbstractApplication {
+    // ...
+}
 ```
 
 ### Все свойства класса по умолчанию должны быть private
@@ -1758,7 +1780,9 @@ public function isEmailAddressData() {
 
 **Был метод:**
 ```php
-public function __construct($method, $url) {}
+public function __construct($method, $url) {
+    // ...
+}
 
 public function body($body) {
     return $this;
@@ -1770,7 +1794,9 @@ public function send();
 
 **Должен замениться на chain-объект:**
 ```php
-public function __construct($method, $url) {}
+public function __construct($method, $url) {
+    // ...
+}
 
 public function body($body) {
     return $this;
