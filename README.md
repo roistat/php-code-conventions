@@ -857,7 +857,7 @@ public function convertedDataObject(array $data) {}
 ```php
 public function validateRequestData(array $requestData) {
     if (!array_key_exists('key', $requestData)) {
-        throw new ValidationError();
+        throw new ValidationError('Field "key" not found');
     }
     // ...
 }
@@ -1121,7 +1121,7 @@ function loadUser() {
 ```
 
 ### Если метод возвращает один объект (или скалярный тип), то в случае, если объект не найден, возвращается null
-Если же метод возвращает список объектов, то в случае, когда список пуст, то возвращает пустой массив. Нельзя возвращать вместо пустого списка `null`.
+Если же метод возвращает список объектов, то в случае, когда список пуст, возвращает пустой массив. Нельзя возвращать вместо пустого списка `null`.
 
 **Правильно:**
 ```php
@@ -1140,6 +1140,33 @@ function loadUsers() {
         return null;
     }
     return [new User()];
+}
+```
+
+Однако, бывают ситуации, когда надо явно указать, что данные отсутвуют, а не содержат пустой список (например, пользователю не показывалось определенное поле):
+
+**Правильно:**
+```php
+/**
+ * PHP 5.6
+ * @return array|null
+ */
+function getObjectCategories($object) {
+    if ($object->categories === null) {
+        return null;
+    }
+    return parseCategories($object->categories);
+}
+
+/**
+ * PHP 7.1
+ * @return array|null
+ */
+function getObjectCategories($object): ?array {
+    if ($object->categories === null) {
+        return null;
+    }
+    return parseCategories($object->categories);
 }
 ```
 
@@ -1257,9 +1284,9 @@ public function someMethod() {
 ```
 
 ## **Комментирование кода**
-### В общем случае комментарии запрещены, так как обычно это показывает нарушение Single Responsibility Principle (это буква S в SOLID)
+### В общем случае комментарии запрещены
 
-Любой участок кода, который вы хотели бы выделить или прокомментировать, надо выносить в отдельный метод
+Желание добавить комментарий — признак плохо читаемого кода. Любой участок кода, который вы хотели бы выделить или прокомментировать, надо выносить в отдельный метод 
 Фразу, которую вы хотели написать в комментарии, надо привести в простой вид и сделать ее названием метода.
 
 **Правильно:**
