@@ -557,13 +557,13 @@ public function getProjectDir(): string {
 **Плохо:**
 ```php
 $isUserValid = $user->valid();
-$isProjectAnalytics = $accessManager->getProjectAccess('analytics');
+$isProjectAnalytics = $accessManager->getProjectAccess($project, 'analytics');
 ```
 
 **Хорошо:**
 ```php
 $userIsValid = $user->isValid();
-$projectCanAccessAnalytics = $accessManager->canProjectAccess('analytics');
+$projectCanAccessAnalytics = $accessManager->canProjectAccess($project, 'analytics');
 ```
 
 Геттеры именуются аналогично переменным:
@@ -659,6 +659,8 @@ function storeUser(User $user) {
     // ...
 }
 ```
+
+**[⬆ наверх](#Содержание)**
 
 ## **Работа с массивами**
 
@@ -1043,6 +1045,41 @@ public function loadItems() {
 }
 public function convertDataToObject(array $data) {
     // ...
+}
+```
+
+### Нельзя писать глагол get в геттерах, например, вместо getDate() следует писать date()
+Геттер — метод, работающий только с полями своего объекта.
+
+**Плохо:**
+```php
+class User {
+    private $_date;
+    private $_customFields;
+
+    public function getDate() {
+        return $this->_date;
+    }
+
+    public function getCustomFields() {
+        return json_decode($this->_customFields);
+    }
+}
+```
+
+**Хорошо:**
+```php
+class User {
+    private $_date;
+    private $_customFields;
+
+    public function date() {
+        return $this->_date;
+    }
+
+    public function decodedCustomFields() {
+        return json_decode($this->_customFields);
+    }
 }
 ```
 
@@ -1495,7 +1532,6 @@ class SomeObject {
         return $this->_id;
     }
 }
-
 ```
 
 ### Статические вызовы можно делать только у самого класса. У инстанса можно обращаться только к его свойствам и методам
