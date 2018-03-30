@@ -547,7 +547,7 @@ if (strlen($foo) > 100) {
 
 ### Нельзя использовать константы через метод `constant`
 
-**Ужасно:**
+**Плохо:**
 ```php
 /**
  * @return string
@@ -557,10 +557,7 @@ public function getProjectDir(): string {
     $name = $prefix . 'PROJECT_DIR';
     return constant($name);
 }
-```
 
-**Плохо:**
-```php
 /**
  * @return string
  */
@@ -583,8 +580,8 @@ public function getProjectDir(): string {
 
 ## **Работа с массивами**
 
-### Для конкатенации массивов используем array_merge, array_replace и прочие методы
-Не используем оператор `+`. Обратите внимание, что `array_merge` все числовые ключи приводит к `int`, даже если они записаны строкой.
+### Для конкатенации массивов запрещено использовать оператор `+`.
+Обратите внимание, что `array_merge` все числовые ключи приводит к `int`, даже если они записаны строкой.
 
 **Плохо:**
 ```php
@@ -593,17 +590,10 @@ return $initialData + $loadedData;
 
 **Хорошо:**
 ```php
-return array_merge($initialData, $loadedData);
-```
-
-Мы использовали встроенную функцию PHP, нарушая одно из [общих правил](#Не-должны-использоваться-специфичные-функции-какой-то-версии-PHP-если-их-можно-избежать). Исправимся:
-
-**Еще лучше:**
-```php
 namespace Service;
 
 class ArrayUtils {
-    
+
     /**
      * @param array $array1
      * @param array $array2
