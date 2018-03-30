@@ -547,6 +547,38 @@ if (strlen($foo) > 100) {
 
 ### Нельзя использовать константы через метод `constant`
 
+**Ужасно:**
+```php
+/**
+ * @return string
+ */
+public function getProjectDir(): string {
+    $prefix='ACME_';
+    $name = $prefix . 'PROJECT_DIR';
+    return constant($name);
+}
+```
+
+**Плохо:**
+```php
+/**
+ * @return string
+ */
+public function getProjectDir(): string {
+    return constant('ACME_PROJECT_DIR');
+}
+```
+
+**Хорошо:**
+```php
+/**
+ * @return string
+ */
+public function getProjectDir(): string {
+    return ACME_PROJECT_DIR;
+}
+```
+
 **[⬆ наверх](#Содержание)**
 
 ## **Работа с массивами**
@@ -563,7 +595,29 @@ return $initialData + $loadedData;
 ```php
 return array_merge($initialData, $loadedData);
 ```
-TO-DO
+
+Мы использовали встроенную функцию PHP, нарушая одно из [общих правил](#Не-должны-использоваться-специфичные-функции-какой-то-версии-PHP-если-их-можно-избежать). Исправимся:
+
+**Еще лучше:**
+```php
+namespace Service;
+
+class ArrayUtils {
+    
+    /**
+     * @param array $array1
+     * @param array $array2
+     * @return array
+     */
+    public function mergeArrays(array $array1, array $array2): array {
+        return array_merge($array1, $array2);
+    }
+}
+
+public function someMethod() {
+    return $this->_arrayUtils->mergeArrays($initialData, $loadedData);
+}
+```
 
 ### Для проверки наличия ключа в ассоциативном массиве используем array_key_exists, а не isset
 `isset` проверяет не ключ на его наличие, а значение этого ключа, если он есть. Это разные методы с разным поведением и назначением. Если вы хотите проверить значение ключа, то делайте это явно. Сначала явно проверьте наличие ключа через `array_key_exists` и обработайте ситуацию его отсутствия, затем приступайте к работе со значением.
