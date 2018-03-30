@@ -553,7 +553,7 @@ if (strlen($foo) > 100) {
  * @return string
  */
 public function getProjectDir(): string {
-    $prefix='ACME_';
+    $prefix = 'ACME_';
     $name = $prefix . 'PROJECT_DIR';
     return constant($name);
 }
