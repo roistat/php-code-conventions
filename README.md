@@ -1860,3 +1860,5 @@ function confirm(string $question): bool {
     return readline("{$question} [y/n]: ") === 'y'
 }
 ```
+
+**[⬆ наверх](#содержание)**
