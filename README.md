@@ -331,34 +331,6 @@ $usersStored = [];
 $storedUsers = [];
 ```
 
-Boolean переменные должны иметь префикс is, если это допускается правилами английского языка.
-
-**Плохо:**
-```php
-if ($validUser) {
-    // ...
-}
-if ($isWriteData) {
-    // ...
-}
-if ($isContainsErrors) {
-    // ...
-}
-```
-
-**Хорошо:**
-```php
-if ($isValidUser) {
-    // ...
-}
-if ($canWriteData) {
-    // ...
-}
-if ($responseContainsErrors) {
-    // ...
-}
-```
-
 Исключение: сгруппированные по некому признаку поля или константы. В этом случае можно использовать префикс.
 
 ```php
@@ -575,6 +547,118 @@ public function getProjectDir(): string {
 ```
 
 **[⬆ наверх](#Содержание)**
+
+## **Логические переменные и методы**
+
+### Названия boolean методов и переменных должны содержать глагол `is`, `has` или `can`
+
+Переменные правильно называть, описывая ее содержимое, а метод — задавая вопрос. Если переменная содержит свойство объекта, следуем правилу [признак объекта добавляется к названию](#Признак-объекта-добавляется-к-названию).
+
+**Плохо:**
+```php
+$isUserValid = $user->valid();
+$isProjectAnalytics = $accessManager->getProjectAccess('analytics');
+```
+
+**Хорошо:**
+```php
+$userIsValid = $user->isValid();
+$projectCanAccessAnalytics = $accessManager->canProjectAccess('analytics');
+```
+
+Геттеры именуются аналогично переменным:
+
+```php
+class User {
+    private $_billingIsPaid;
+    private $_isEnabled;
+
+    public function isEnabled() {
+        return $this->_isEnabled;
+    }
+
+    public function billingIsPaid() {
+        return $this->_billingIsPaid;
+    }
+}
+```
+
+Такое именование позволяет легче читать условия:
+
+```php
+// if user is valid, then do something
+if ($userIsValid) {
+    // do something
+}
+```
+
+Форму "should X" можно превратить в "is X required":
+
+```php
+$shouldUpdateComponent -> $isComponentUpdateRequired;
+```
+
+### Запрещены отрицательные логические названия
+
+**Плохо:**
+```php
+if ($project->isInvalid()) {
+    // ...
+}
+if ($project->isNotValid()) {
+    // ...
+}
+if ($accessManager->isAccessDenied()) {
+    // ...
+}
+```
+
+**Хорошо:**
+```php
+if (!$project->isValid()) {
+    // ...
+}
+if (!$accessManager->isAccessAllowed()) {
+    // ...
+}
+if ($accessManager->canAccess()) {
+    // ...
+}
+```
+
+### Не используйте boolean переменные (флаги) как параметры функции
+Флаг в качестве параметра это признак того, что функция делает больше одной вещи, нарушая Single Responsibility Principle. Избавляйтесь от них, выделяя код внтури логических блоков в отдельные ветви выполнения.
+
+**Плохо:**
+```php
+function someMethod() {
+    // ...
+    $projectNotificationIsEnabled = $notificationManager->isProjectNotificationEnabled($project);
+    storeUser($user, $projectNotificationIsEnabled);
+}
+
+function storeUser(User $user, $isNotificationEnabled) {
+    // ...
+    if ($isNotificationEnabled) {
+        notify('new user');
+    }
+}
+```
+
+**Хорошо:**
+```php
+function someMethod() {
+    // ...
+    storeUser($user);
+    if ($notificationManager->isProjectNotificationEnabled($project)) {
+        notify('new user');
+    }
+}
+
+function storeUser(User $user) {
+    // ...
+}
+```
 
 ## **Работа с массивами**
 
