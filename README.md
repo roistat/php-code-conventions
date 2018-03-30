@@ -1297,17 +1297,26 @@ abstract class Loader {
 ```php
 abstract class Loader {
     
+    /**
+     * @type array
+     */
     private $_cachedData = [];
 
+    /**
+     * @return array
+     */
     public function getData() {
         return $this->_cachedData;
     }
 
     public function init() {
-        $this->_cachedData = $this->load();
+        $this->_cachedData = $this->_load();
     }
 
-    abstract public function load();
+    /**
+     * @return array
+     */
+    abstract protected function _load(): array;
 }
 ```
 
