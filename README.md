@@ -17,17 +17,14 @@
   0. [Работа с датами](#Работа-с-датами)
   0. [Работа с неймспейсами](#Работа-с-неймспейсами)
   0. [Работа с методами](#Работа-с-методами)
+  0. [Возврат результата работы метода](#Возврат-результата-работы-метода)
   0. [Работа с классами](#Работа-с-классами)
   0. [Работа с объектами](#Работа-с-объектами)
-  0. [Возврат результата работы метода](#Возврат-результата-работы-метода)
-  0. [Работа с сервисами](#Работа-с-сервисами)
   0. [Комментирование кода](#Комментирование-кода)
   0. [Работа с исключениями](#Работа-с-исключениями)
   0. [Работа с внешним хранилищем данных](#Работа-с-внешним-хранилищем-данных)
   0. [Особенности Pull Request (PR)](#Особенности-pull-request-pr)
-  0. [Работа с компонентами](#Работа-с-компонентами)
   0. [Работа с шаблонами](#Работа-с-шаблонами)
-  0. [Работа с патчами](#Работа-с-патчами)
   0. [Работа с литералами](#Работа-с-литералами)
   0. [Работа с условиями](#Работа-с-условиями)
   0. [Работа с тернарными операторами](#Работа-с-тернарными-операторами)
@@ -275,6 +272,7 @@ private function _convertUserToApiObject(Entity\Mapper\User $user): Entity\Api\U
 **[⬆ наверх](#Содержание)**
 
 ## **Работа с файлами**
+
 ### Названия файлов пишутся строчными буквами через underscore
 Кроме случаев, когда внутри файла содержится класс. В таком случае файл должен повторять названия класса, то есть UpperCamelCase. Аналогично обычные директории и неймспейсы.
 
@@ -1048,182 +1046,8 @@ public function someMethod($projectName = null) {
 
 **[⬆ наверх](#Содержание)**
 
-## **Работа с классами**
-
-### Трейты имеют постфикс Trait
-
-**Хорошо:**
-```php
-trait AjaxResponseTrait {
-    // ...
-}
-```
-
-### Интерфейсы имеют постфикс Interface
-
-**Хорошо:**
-```php
-interface ApplicationInterface {
-    // ...
-}
-```
-
-### Абстрактные классы имеют префикс Abstract
-
-**Хорошо:**
-```php
-abstract class AbstractApplication {
-    // ...
-}
-```
-
-### Все свойства класса по умолчанию должны быть private
-Если свойство используется наследниками класса, то оно делается `protected`. Если используется сторонними классами, тогда `public`.
-
-**Плохо:**
-```php
-abstract class Loader {
-    public $data = [];
-
-    public function getData() {
-        return $this->data;
-    }
-
-    public function init() {
-        $this->data = $this->load();
-    }
-
-    abstract public function load();
-}
-```
-
-**Хорошо:**
-```php
-abstract class Loader {
-    
-    private $_cachedData = [];
-
-    public function getData() {
-        return $this->_cachedData;
-    }
-
-    public function init() {
-        $this->_cachedData = $this->load();
-    }
-
-    abstract public function load();
-}
-```
-
-### Методы и свойства в классе должны быть отсортированы по уровням видимости и по порядку использования сверху вниз
-Уровни видимости: `public` -> `protected` -> `private`
-
-**Плохо:**
-```php
-class SomeClass {
-    private $_privPropA;   
-    public $pubPropA;
-    protected $_protPropA;
- 
-    protected function _protA() {
-    }
- 
- 
-    public function pubB() {
-    }
- 
- 
-    private function _privA() {
-        return $this->_protA();
-    }
-  
-    public function pubA() {
-        $this->_privA();
-        return $this->pubB();
-    }
-}
-```
-
-**Хорошо:**
-```php
-class SomeClass {
-    public $pubPropA;
-    protected $_protPropA;
-    private $_privPropA;
- 
-    public function pubA() {
-        $this->_privA();
-        return $this->pubB();
-    }
- 
-    public function pubB() {
-    }
- 
-    protected function _protA() {
-    }
- 
-    private function _privA() {
-        return $this->_protA();
-    }
-}
-```
-
-**[⬆ наверх](#Содержание)**
-
-## **Работа с объектами**
-
-### Все объекты должны быть immutable, если от них не требуется обратного
-
-**Плохо:**
-```php
-class SomeObject {
-    /**
-     * @var int
-     */
-    public $id;
-}
-```
-
-**Хорошо:**
-```php
-class SomeObject {
-    /**
-     * @var int
-     */ 
-    private $_id;
-  
-    /**
-     * @param int $id
-     */
-    public function __construct($id) {
-        $this->_id = $id;
-    }
-  
-    /**
-     * @var int
-     */
-    public function id() {
-        return $this->_id;
-    }
-}
-
-```
-
-### Статические вызовы можно делать только у самого класса. У инстанса можно обращаться только к его свойствам и методам
-
-**Плохо:**
-```php
-$type = $user::TYPE;
-```
-
-**Хорошо:**
-```php
-$type = User::TYPE;
-```
-
-**[⬆ наверх](#Содержание)**
-
 ## **Возврат результата работы метода**
+
 ### Метод всегда должен возвращать только одну структуру данных (или null) или ничего не возвращать
 Метод не может в разных ситуациях возвращать разные типы данных
 
@@ -1416,6 +1240,181 @@ public function someMethod() {
     }
     return $result;
 }
+```
+
+**[⬆ наверх](#Содержание)**
+
+## **Работа с классами**
+
+### Трейты имеют постфикс Trait
+
+**Хорошо:**
+```php
+trait AjaxResponseTrait {
+    // ...
+}
+```
+
+### Интерфейсы имеют постфикс Interface
+
+**Хорошо:**
+```php
+interface ApplicationInterface {
+    // ...
+}
+```
+
+### Абстрактные классы имеют префикс Abstract
+
+**Хорошо:**
+```php
+abstract class AbstractApplication {
+    // ...
+}
+```
+
+### Все свойства класса по умолчанию должны быть private
+Если свойство используется наследниками класса, то оно делается `protected`. Если используется сторонними классами, тогда `public`.
+
+**Плохо:**
+```php
+abstract class Loader {
+    public $data = [];
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function init() {
+        $this->data = $this->load();
+    }
+
+    abstract public function load();
+}
+```
+
+**Хорошо:**
+```php
+abstract class Loader {
+    
+    private $_cachedData = [];
+
+    public function getData() {
+        return $this->_cachedData;
+    }
+
+    public function init() {
+        $this->_cachedData = $this->load();
+    }
+
+    abstract public function load();
+}
+```
+
+### Методы и свойства в классе должны быть отсортированы по уровням видимости и по порядку использования сверху вниз
+Уровни видимости: `public` -> `protected` -> `private`
+
+**Плохо:**
+```php
+class SomeClass {
+    private $_privPropA;   
+    public $pubPropA;
+    protected $_protPropA;
+ 
+    protected function _protA() {
+    }
+ 
+ 
+    public function pubB() {
+    }
+ 
+ 
+    private function _privA() {
+        return $this->_protA();
+    }
+  
+    public function pubA() {
+        $this->_privA();
+        return $this->pubB();
+    }
+}
+```
+
+**Хорошо:**
+```php
+class SomeClass {
+    public $pubPropA;
+    protected $_protPropA;
+    private $_privPropA;
+ 
+    public function pubA() {
+        $this->_privA();
+        return $this->pubB();
+    }
+ 
+    public function pubB() {
+    }
+ 
+    protected function _protA() {
+    }
+ 
+    private function _privA() {
+        return $this->_protA();
+    }
+}
+```
+
+**[⬆ наверх](#Содержание)**
+
+## **Работа с объектами**
+
+### Все объекты должны быть immutable, если от них не требуется обратного
+
+**Плохо:**
+```php
+class SomeObject {
+    /**
+     * @var int
+     */
+    public $id;
+}
+```
+
+**Хорошо:**
+```php
+class SomeObject {
+    /**
+     * @var int
+     */ 
+    private $_id;
+  
+    /**
+     * @param int $id
+     */
+    public function __construct($id) {
+        $this->_id = $id;
+    }
+  
+    /**
+     * @var int
+     */
+    public function id() {
+        return $this->_id;
+    }
+}
+
+```
+
+### Статические вызовы можно делать только у самого класса. У инстанса можно обращаться только к его свойствам и методам
+
+**Плохо:**
+```php
+$type = $user::TYPE;
+```
+
+**Хорошо:**
+```php
+$type = User::TYPE;
 ```
 
 **[⬆ наверх](#Содержание)**
