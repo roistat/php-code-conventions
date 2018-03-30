@@ -1305,11 +1305,11 @@ abstract class Loader {
     /**
      * @return array
      */
-    public function getData() {
+    public function getData(): array {
         return $this->_cachedData;
     }
 
-    public function init() {
+    public function init(): void {
         $this->_cachedData = $this->_load();
     }
 
