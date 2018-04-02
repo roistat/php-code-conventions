@@ -809,9 +809,23 @@ loadSomeData($date, $interval);
 
 **Хорошо:**
 ```php
-$date = new \DateTime($request->get('date'));
+$date = $this->_dateService->instance($request->get('date'));
 $interval = new \DateInterval('P30D');
 loadSomeData($date, $interval);
+```
+
+### Запрещено создавать объект даты через конструктор `new \DateTime()`
+
+В проекте для этого должна быть обертка в сервисе для работы с датами
+
+**Плохо:**
+```php
+$date = new \DateTime();
+```
+
+**Хорошо:**
+```php
+$date = $this->_dateService->instance();
 ```
 
 ### Если дата должна быть представлена скалярным значением, необходимо использовать строку
