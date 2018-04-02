@@ -592,12 +592,6 @@ if ($userIsValid) {
 }
 ```
 
-Форму "should X" можно превратить в "is X required":
-
-```php
-$shouldUpdateComponent -> $isComponentUpdateRequired;
-```
-
 ### Запрещены отрицательные логические названия
 
 **Плохо:**
