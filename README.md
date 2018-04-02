@@ -729,7 +729,7 @@ loadSomeData($date, $interval);
 **Хорошо:**
 ```php
 $date = new \DateTime($request->get('date'));
-$interval = new \DateInterval('P1M');
+$interval = new \DateInterval('P30D');
 loadSomeData($date, $interval);
 ```
 
