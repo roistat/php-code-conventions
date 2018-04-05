@@ -792,12 +792,12 @@ $string = "\tSome string\n";
 
 Плохо:
 ```php
-$string = 'Object with type "' . $object->getType() . '" has been removed';
+$string = 'Object with type "' . $object->type() . '" has been removed';
 ```
 
 Хорошо:
 ```php
-$string = "Object with type \"{$object->getType()}\" has been removed";
+$string = "Object with type \"{$object->type()}\" has been removed";
 ```
 
 **[⬆ наверх](#Содержание)**
