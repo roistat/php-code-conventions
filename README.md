@@ -2054,16 +2054,7 @@ public function isEmailAddressData() {
 
 **Был метод:**
 ```php
-public function __construct($method, $url) {
-    // ...
-}
-
-public function body($body) {
-    return $this;
-}
-// остальные методы с необязательными параметрами
-
-public function send();
+function send($method, $url, $body = null, $headers = null, $retries = 1, $timeout = 300) {}
 ```
 
 **Должен замениться на chain-объект:**
