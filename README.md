@@ -980,13 +980,13 @@ function storeUser(int $id, string $name, array $tags = []): ?User {
 }
 
 // для PHP 5.6
-// без строгой типизации возвращаемых типов любой метод
-// может вернуть null, так что можно его не указывать в phpdoc
+// статический анализ работает даже без строгой типизации, а значит
+// если метод может вернуть null, это нужно указывать в phpdoc
 /**
  * @param int $id
  * @param string $name
  * @param array $tags
- * @return User
+ * @return User|null
  */
 function storeUser($id, $name, array $tags = []) {
     // ...
