@@ -1,6 +1,6 @@
 # Translations
 
-- ![en](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/United-Kingdom.png) **[English](https://github.com/roistat/php-code-conventions/blob/master/README_en.md)** (work is in progress, pull requests are welcome)
+- 🇺🇸 **[English](https://github.com/roistat/php-code-conventions/blob/master/README_en.md)** (work is in progress, pull requests are welcome)
 
 # Содержание
   1. [Введение](#Введение)
