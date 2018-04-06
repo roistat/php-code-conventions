@@ -266,7 +266,9 @@ class User {
 // src/Controller/Api/User.php
 public function actionUsers(): Response {
     $users = $repository->loadUsers();
-    $apiUsers = array_map([$this, '_convertUserToApiObject'], $users);
+    $apiUsers = array_map(function ($user) {
+        return $this->_convertUserToApiObject($user);
+    }, $users);
     return new Response(['data' => $apiUsers);
 }
 
