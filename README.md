@@ -406,13 +406,13 @@ $object->getExpirationDate();
 
 Плохо:
 ```php
-$projectsList = $repository->loadProjects());
+$projectsList = $repository->loadProjects();
 $projectsListIds = $utils->extractField('id', $projectsList);
 ```
 
 Хорошо:
 ```php
-$projects = $repository->loadProjects());
+$projects = $repository->loadProjects();
 $projectsIds = $utils->extractField('id', $projects);
 ```
 
