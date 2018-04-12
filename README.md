@@ -406,14 +406,30 @@ $object->getExpirationDate();
 
 Плохо:
 ```php
-$projectsList = $repository->loadProjects();
-$projectsListIds = $utils->extractField('id', $projectsList);
+$projectsArray = $repository->loadProjects();
+$projectsArrayIds = $utils->extractField('id', $projectsList);
+$titleString = 'Article header';
 ```
 
 Хорошо:
 ```php
 $projects = $repository->loadProjects();
 $projectsIds = $utils->extractField('id', $projects);
+$title = 'Article header';
+```
+
+Исключение для списков, в названии используем суфикс `List`.
+
+Плохо:
+```php
+$projects = [];
+$usersList = [];
+```
+
+Хорошо:
+```php
+$pojectList = [];
+$userList = [];
 ```
 
 ### 📖 Нельзя изменять переменные, которые передаются в метод на вход 
