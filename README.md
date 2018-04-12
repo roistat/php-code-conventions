@@ -809,6 +809,13 @@ $string = 'Object with type "' . $object->type() . '" has been removed';
 ```php
 $string = "Object with type \"{$object->type()}\" has been removed";
 ```
+Использовать `sprintf()` очень хорошо:
+```php
+$string = sprintf(
+    'Object with type "%s" has been removed', // шаблон
+    $object->type() // подстановка
+);
+```
 
 **[⬆ наверх](#Содержание)**
 
