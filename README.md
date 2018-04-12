@@ -1102,41 +1102,6 @@ public function convertDataToObject(array $data) {
 }
 ```
 
-### 📖 Нельзя использовать глагол get в геттерах
-Например, вместо `getDate()` следует писать `date()`. Геттер — метод, работающий только с полями своего объекта.
-
-Плохо:
-```php
-class User {
-    private $_date;
-    private $_customFields;
-
-    public function getDate() {
-        return $this->_date;
-    }
-
-    public function getCustomFields() {
-        return json_decode($this->_customFields);
-    }
-}
-```
-
-Хорошо:
-```php
-class User {
-    private $_date;
-    private $_customFields;
-
-    public function date() {
-        return $this->_date;
-    }
-
-    public function decodedCustomFields() {
-        return json_decode($this->_customFields);
-    }
-}
-```
-
 ### 📖 Методы названия, которых начинаются c `check` и `validate`, должны выбрасывать исключения и не возвращать значения
 
 Плохо:
