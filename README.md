@@ -1,7 +1,3 @@
-# Translations
-
-- 🇺🇸 **[English](https://github.com/roistat/php-code-conventions/blob/master/README_en.md)** (work is in progress, pull requests are welcome)
-
 # Содержание
   1. [Введение](#Введение)
   0. [Ценности](#Ценности)
@@ -204,17 +200,17 @@ class User {
     /**
      * @var Env
      */
-    private $_env;
+    private $env;
     
     /**
      * @param Env $env
      */
     public function __construct(Env $env) {
-        $this->_env = $env;
+        $this->env = $env;
     }
 
     public function loadUsers() {
-        $path = $this->_env->getDataPath();
+        $path = $this->env->getDataPath();
         // ...
     }
 }
@@ -275,7 +271,7 @@ class User {
 public function actionUsers(): Response {
     $users = $repository->loadUsers();
     $apiUsers = array_map(function ($user) {
-        return $this->_convertUserToApiObject($user);
+        return $this->convertUserToApiObject($user);
     }, $users);
     return new Response(['data' => $apiUsers);
 }
@@ -535,13 +531,13 @@ $foo = $bar;
 
 Плохо:
 ```php
-$this->_callSomeFunc($bar = strlen($foo));
+$this->callSomeFunc($bar = strlen($foo));
 ```
 
 Хорошо:
 ```php
 $bar = strlen($foo);
-$this->_callSomeFunc($bar);
+$this->callSomeFunc($bar);
 ```
 
 
@@ -615,15 +611,15 @@ $projectCanAccessAnalytics = $accessManager->canProjectAccess($project, 'analyti
 
 ```php
 class User {
-    private $_billingIsPaid;
-    private $_isEnabled;
+    private $billingIsPaid;
+    private $isEnabled;
 
     public function isEnabled() {
-        return $this->_isEnabled;
+        return $this->isEnabled;
     }
 
     public function billingIsPaid() {
-        return $this->_billingIsPaid;
+        return $this->billingIsPaid;
     }
 }
 ```
@@ -728,7 +724,7 @@ class ArrayUtils {
 }
 
 public function someMethod() {
-    return $this->_arrayUtils->mergeArrays($initialData, $loadedData);
+    return $this->arrayUtils->mergeArrays($initialData, $loadedData);
 }
 ```
 
@@ -860,7 +856,7 @@ loadSomeData($date, $interval);
 
 Хорошо:
 ```php
-$date = $this->_dateService->instance($request->get('date'));
+$date = $this->dateService->instance($request->get('date'));
 $interval = new \DateInterval('P30D');
 loadSomeData($date, $interval);
 ```
@@ -876,7 +872,7 @@ $date = new \DateTime();
 
 Хорошо:
 ```php
-$date = $this->_dateService->instance();
+$date = $this->dateService->instance();
 ```
 
 ### 📖 Если дата должна быть представлена скалярным значением, необходимо использовать строку
@@ -901,29 +897,50 @@ class User {
     /**
      * @type string
      */
-    public $creation_date;
+    public $createdAt;
 }
 
-$user->creation_date = '2018-01-18 12:54:11';
+$user->createdAt = '2018-01-18 12:54:11';
 ```
 
-### 📖 При работе с интервалами/периодами запрещено указывать месяц или год
+### 📖 При именовании полей и методов с датами используется постфикс AT
 
-В зависимости от текущей даты месяц и год могут принимать разные временные промежутки (високосный и обычный год, разное количество дней в месяце). Вместо этого в качестве указания интервала используем дни, часы, минуты, секунды.
+Все поля или методы которые возращают даты должны именоваться глаголом и иметь постфикс AT
 
 Плохо:
+
 ```php
-$dateTime = new \DateTime('-2 month');
-$dateInterval = new \DateInterval('P2M');
+class Model
+{
+    private $createDate;
+    private $updateTime;
+}
 ```
 
 Хорошо:
+
 ```php
-$dateTime = new $this->_dateTime->instance('-60 days');
-$dateInterval = new \DateInterval('P60D');
+class Model
+{
+    private $createdAt;
+    private $updatedAt;
+}
 ```
 
-Месяц или год необходимо использовать, если это напрямую указано в требованиях задачи как календарный месяц или календарный год.
+В случае с **YII** и тем, что обращение к свойствам моделей идёт через магические методы, а они в свою очередь подхватывают названия из БД, для разделения используется нижнее подчёркивание:
+
+Хорошо:
+
+```php
+/**
+ * @property string $created_at
+ * @property string $updated_at
+ */
+class Model
+{
+
+}
+```
 
 **[⬆ наверх](#Содержание)**
 
@@ -1183,23 +1200,23 @@ public function validateRequestData(array $requestData) {
 Плохо:
 ```php
 public function loadData() {
-    static $_cachedData;
-    if ($_cachedData === null) {
-        $_cachedData = [];
+    static $cachedData;
+    if ($cachedData === null) {
+        $cachedData = [];
     }
-    return $_cachedData;
+    return $cachedData;
 }
 ```
 
 Хорошо:
 ```php
-private $_cachedData = [];
+private $cachedData = [];
 
 public function loadData() {
-    if ($this->_cachedData === null) {
-        $this->_cachedData = [];
+    if ($this->cachedData === null) {
+        $this->cachedData = [];
     }
-    return $this->_cachedData;
+    return $this->cachedData;
 }
 ```
 
@@ -1383,14 +1400,14 @@ function loadUsers() {
  * @return int
  */
 public function someMethod() {
-    $isValid = $this->_someCheck();
+    $isValid = $this->someCheck();
     if ($isValid) {
         $tmp = 0;
-        $someValue = $this->_getSomeValue();
+        $someValue = $this->getSomeValue();
         if ($someValue > 0) {
             $tmp = $someValue;
         }
-        $anotherValue = $this->_getAnotherValue();
+        $anotherValue = $this->getAnotherValue();
         if ($anotherValue > 0) {
             return $tmp + $anotherValue;
         } else {
@@ -1411,16 +1428,16 @@ public function someMethod() {
 public function someMethod() {
     $result = 0;
      
-    $isValid = $this->_someCheck();
+    $isValid = $this->someCheck();
     if (!$isValid) {
         throw new \Exception('Invalid condition');
     }
   
-    $someValue = $this->_getSomeValue();
+    $someValue = $this->getSomeValue();
     if ($someValue > 0) {
         $result += $someValue;
     }
-    $anotherValue = $this->_getAnotherValue();
+    $anotherValue = $this->getAnotherValue();
     if ($anotherValue > 0) {
         $result += $anotherValue;
     }
@@ -1486,23 +1503,66 @@ abstract class Loader {
     /**
      * @type array
      */
-    private $_cachedData = [];
+    private $cachedData = [];
 
     /**
      * @return array
      */
     public function getData(): array {
-        return $this->_cachedData;
+        return $this->cachedData;
     }
 
     public function init(): void {
-        $this->_cachedData = $this->_load();
+        $this->cachedData = $this->load();
     }
 
     /**
      * @return array
      */
-    abstract protected function _load(): array;
+    abstract protected function load(): array;
+}
+```
+
+### 📖 Свойства и методы должны именоваться по типу camelCase
+
+Плохо:
+```php
+class SomeClass
+{
+    private $property_name;
+    
+    public function get_property_name()
+    {
+        // ...
+    }
+}
+```
+
+Хорошо:
+```php
+class SomeClass
+{
+    private $propertyName;
+    
+    public function getPropertyName()
+    {
+        // ...
+    }
+}
+
+В Yii при работе с моделями используются названия свойств взятые из БД, а в базе все названия хранятся с нижним подчёркиванием.
+Если модель доплняется каким-то свойством оно должно быть так же проименовано в стиле camelCase
+Так мы будем чётко понимать какие свойства из БД, а какие были прописаны в классе
+
+Хорошо:
+```php
+/**
+ * @property string $created_at
+ * @property string $updated_at
+ */
+class Model
+{
+    public $someName;
 }
 ```
 
@@ -1512,11 +1572,11 @@ abstract class Loader {
 Плохо:
 ```php
 class SomeClass {
-    private $_privPropA;   
+    private $privPropA;   
     public $pubPropA;
-    protected $_protPropA;
+    protected $protPropA;
  
-    protected function _protA() {
+    protected function protA() {
     }
  
  
@@ -1524,12 +1584,12 @@ class SomeClass {
     }
  
  
-    private function _privA() {
-        return $this->_protA();
+    private function privA() {
+        return $this->protA();
     }
   
     public function pubA() {
-        $this->_privA();
+        $this->privA();
         return $this->pubB();
     }
 }
@@ -1539,22 +1599,22 @@ class SomeClass {
 ```php
 class SomeClass {
     public $pubPropA;
-    protected $_protPropA;
-    private $_privPropA;
+    protected $protPropA;
+    private $privPropA;
  
     public function pubA() {
-        $this->_privA();
+        $this->privA();
         return $this->pubB();
     }
  
     public function pubB() {
     }
  
-    protected function _protA() {
+    protected function protA() {
     }
  
-    private function _privA() {
-        return $this->_protA();
+    private function privA() {
+        return $this->protA();
     }
 }
 ```
@@ -1581,20 +1641,20 @@ class SomeObject {
     /**
      * @var int
      */ 
-    private $_id;
+    private $id;
   
     /**
      * @param int $id
      */
     public function __construct($id) {
-        $this->_id = $id;
+        $this->id = $id;
     }
   
     /**
      * @var int
      */
     public function id() {
-        return $this->_id;
+        return $this->id;
     }
 }
 ```
@@ -2111,7 +2171,7 @@ new $sender($method, $url)->body($body)->retries(10)->timeout(25)->send();
 **[⬆ наверх](#Содержание)**
 
 ## **Работа со скриптами**
-### 📖 Любой скрипт, который изменяет данные, должен иметь подтверждение перед выполнением действий с данными и `debug` по результатам работы
+### 📖 Любой скрипт, который удаляет данные, должен иметь подтверждение перед выполнением действий с данными и `debug` по результатам работы
 
 Плохо:
 ``` php
