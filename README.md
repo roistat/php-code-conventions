@@ -983,7 +983,7 @@ function storeUser($id, $name, $tags = []) {
 /**
  * @param int $id
  * @param string $name
- * @param array $tags
+ * @param string[] $tags
  * @return User|null
  */
 function storeUser(int $id, string $name, array $tags = []): ?User {
@@ -996,7 +996,7 @@ function storeUser(int $id, string $name, array $tags = []): ?User {
 /**
  * @param int $id
  * @param string $name
- * @param array $tags
+ * @param string[] $tags
  * @return User
  */
 function storeUser($id, $name, array $tags = []) {
