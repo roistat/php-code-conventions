@@ -2065,16 +2065,15 @@ public function isEmailAddressData() {
 **[⬆ up](#Summary)**
 
 ## **Chaining Objects**
-### 📖 Метод с большим количеством необязательных параметров (А) может быть заменен chain-объектом
-Метод с большим количеством необязательных параметров (А) может быть заменен chain-объектом.
-В объекте конструктор принимает все обязательные параметры, а все необязательные реализуются сеттерами без глагола set (только существительное), возвращающими текущий объект (chaining методов). Метод-глагол у объекта один без параметров, он завершает использование объекта и выполняет действие, которое должен был выполнить метод А.
+### 📖 A method with many non-required params (А) may be replaced with a chain-object
+The constructor gets all the required params, and others are added with setters, that are returning the self object (chaining). The object has one verb-method without parameters, he finishes the object use и do the actions usually made by the method А.
 
-**Был метод:**
+**Before:**
 ```php
 function send($method, $url, $body = null, $headers = null, $retries = 1, $timeout = 300) {}
 ```
 
-**Должен замениться на chain-объект:**
+**Has to be chained:**
 ```php
 public function __construct($method, $url) {
     // ...
@@ -2083,12 +2082,11 @@ public function __construct($method, $url) {
 public function body($body) {
     return $this;
 }
-// остальные методы с необязательными параметрами
 
 public function send();
 ```
 
-**Новый объект используется так:**
+**Usage of a new object:**
 ```php
 new $sender($method, $url)->body($body)->retries(10)->timeout(25)->send();
 ```
@@ -2096,7 +2094,7 @@ new $sender($method, $url)->body($body)->retries(10)->timeout(25)->send();
 **[⬆ up](#Summary)**
 
 ## **Cron Jobs and Scripts**
-### 📖 Любой скрипт, который изменяет данные, должен иметь подтверждение перед выполнением действий с данными и `debug` по результатам работы
+### 📖 Any script, that makes changes in the data, have to ask the confirmation and `debug` the results
 
 Bad:
 ``` php
@@ -2104,7 +2102,7 @@ Bad:
 $repository->deleteItems();
 ```
 
-Исправим, чтобы случайный запуск не удалил элементы:
+Fix that, so that an accidental launch wouldn't do damages:
 
 Good:
 ```php
