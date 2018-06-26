@@ -2,8 +2,6 @@
 
 - ![ru](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Russia.png) **[Russian](https://github.com/roistat/php-code-conventions)**
 
-- 🇺🇸 **[English](https://github.com/roistat/php-code-conventions/blob/master/README_en.md)** (work is in progress, pull requests are welcome)
-
 # Table of Contents
   1. [Introduction](#Introduction)
   2. [Goals](#Goals)
