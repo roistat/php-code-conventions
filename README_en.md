@@ -1966,8 +1966,8 @@ if (is_string($value) && $value !== '') {
 }
 ```
 
-### 📖 Если вы используете встроенную функцию PHP, которая возвращает `0`, `1` и, возможно, `false`, то при возможности результат ее работы используем в условии как `bool` без дополнительных сравнений
-Это не касается случая, когда вам нужно отделить два разных результата между собой, например отдельно отработать `0` и `false`.
+### 📖 If you use the built-in PHP function, that returns `0`, `1` and, maybe, `false`, then if possible use the result in a  `bool` condition without additional checks
+This is not for the case in which you have to handle two results differently, for example `0` and `false`.
 
 Bad:
 ```php
@@ -1999,9 +1999,9 @@ if (strpos($search, $text) === false) {
 
 ## **Ternary Operators**
 
-### 📖 При использовании тернарных операторов действуют те же правила, что и при использовании условий
+### 📖 Ternary operator is used with the same rules as in conditions
 
-### 📖 Тернарный оператор следует использовать, если обе ветви условия предназначены для установки одной переменной одним языковым выражением
+### 📖 Ternary operator is used, if the variable is defined the same way in both "if" cases
 При наличии логики в ветках условия следует рассмотреть возможность вынести ее в отдельный метод.
 
 Bad:
@@ -2018,7 +2018,7 @@ Good:
 $bill = $isExternal ? $this->loadExternalBill() : $this->loadInternalBill();
 ```
 
-### 📖 Использовать цепочки из тернарных операторов `?:` допустимо только при указании значения по умолчанию
+### 📖 The usage of ternary operator `?:` can be used if the default value is defined
 
 Bad:
 ```php
@@ -2035,8 +2035,8 @@ $contact = $this->loadContactByPhone() ?: $this->loadContactByEmail() ?: $this->
 
 ## **Tests**
 
-### 📖 Тесты являются таким же production-кодом, как и любой другой код
-Они должны быть написаны с соблюдением соглашений, описанных в этом документе.
+### 📖 Tests is also production-code, as well as other code
+They have to be written following the rules described in this document.
 
 ### 📖 В дата провайдерах для тестов надо писать комментарий к структуре отдаваемого массива значений
 
@@ -2102,7 +2102,7 @@ Bad:
 $repository->deleteItems();
 ```
 
-Fix that, so that an accidental launch wouldn't do damages:
+Fix that, so that an accidental launch wouldn't do any damage:
 
 Good:
 ```php
