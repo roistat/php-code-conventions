@@ -1993,6 +1993,26 @@ if (strpos($search, $text) === false) {
 }
 ```
 
+### 📖 Using both AND and OR operators in same expression requires direct priority indication with braces
+Note the different meanings of two "good" versions
+
+Bad:
+```php
+if ($isMobile || $isSizeTooBig && $isAllowedToShrink) {
+    // ...
+}
+```
+
+Good:
+```php
+if (($isMobile || $isSizeTooBig) && $isAllowedToShrink) {
+    // ...
+}
+if ($isMobile || ($isSizeTooBig && $isAllowedToShrink)) {
+    // ...
+}
+```
+
 **[⬆ up](#Summary)**
 
 ## **Ternary Operators**
