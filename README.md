@@ -1705,7 +1705,7 @@ public function function requestData() {
     try {
         $objects = $facebookAds->requestData($params);
     } catch (FacebookAds\Exception\Exception $e) {
-        throw new Exception\ExternalServiceError("Facebook error: {$e->getMessage()}", 0, $e);
+        throw new Exception\ExternalServiceError("Facebook error", 0, $e);
     }
     //..
 }
