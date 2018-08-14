@@ -1040,6 +1040,30 @@ public function someMethod(array $users, Project $project, int $timestmap): Foo 
 }
 ```
 
+### 📖 В PHPDoc у аргументов не надо указывать `null`
+
+Bad:
+```php
+/**
+* @param string|null $sortBy
+* @return \DateTimeZone[]
+*/
+public function getTimeZonesList($sortBy = null) {
+    // ...
+}
+```
+
+Good:
+```php
+/**
+* @param string $sortBy
+* @return \DateTimeZone[]
+*/
+public function getTimeZonesList($sortBy = null) {
+    // ...
+}
+```
+
 ### 📖 В PHPDoc в возвращаемом значении не надо указывать `void` и `null`, если метод ничего не возвращает.
 
 Bad:
