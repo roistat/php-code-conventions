@@ -948,7 +948,7 @@ function storeUser($id, $name, $tags = []) {
 Хорошо:
 ```php
 // для PHP 7.1
-function makeCoffee(string $type, int $volume): ?Coffee {
+function makeCoffee(string $type, int $volume): Coffee {
 	// ...
 }
 
