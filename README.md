@@ -133,12 +133,7 @@ $urlParts = $urlService->parseUrl($url);
 ### 📖 Вместо отсутствующего скалярного значения используется null
 0 и пустую строку нельзя использовать в качестве показателя отсутствия значения.
 ```php
-/**
- * @param string $title
- * @param string $message
- * @param string $date
- */
-function sendEmail($title, $message = null, $date = null) {
+function sendEmail(string $title, string $message = null, string $date = null): void {
     // ...
 }
 
@@ -153,7 +148,7 @@ $object->sendEmail('Title', '', '2017-01-01');
 
 Плохо:
 ```php
-function deleteUsersByIds(array $ids = [], $someOption = false) {
+function deleteUsersByIds(array $ids = [], bool $someOption = false) {
     // ...
 }
 
@@ -191,9 +186,6 @@ class User {
 ```php
 class Env {
     
-    /**
-     * @return string
-     */
     public function getDataPath(): string {
         return getenv('DATA_PATH');
     }
@@ -206,9 +198,6 @@ class User {
      */
     private $_env;
     
-    /**
-     * @param Env $env
-     */
     public function __construct(Env $env) {
         $this->_env = $env;
     }
@@ -365,21 +354,14 @@ class ProjectInfo {
 
 Плохо:
 ```php
-/**
- * @param string &$name
- */
-function removePrefix(&$name) {
+function removePrefix(string &$name) {
     // ...
 }
 ```
 
 Хорошо:
 ```php
-/**
- * @param string $name
- * @return string
- */
-function removePrefix($name) {
+function removePrefix(string $name): string {
     // ...
     return $result;
 }
@@ -421,7 +403,7 @@ $projectsIds = $utils->extractField('id', $projects);
 
 Плохо:
 ```php
-function parseText($text) {
+function parseText(string $text) {
     $text = trim($text);
     // ...
 }
@@ -429,7 +411,7 @@ function parseText($text) {
 
 Хорошо:
 ```php
-function parseText($text) {
+function parseText(string $text) {
     $trimmedText = trim($text);
     // ...
 }
@@ -536,18 +518,12 @@ if (strlen($foo) > 100) {
 
 Плохо:
 ```php
-/**
- * @return string
- */
 public function getProjectDir(): string {
     $prefix = 'ACME_';
     $name = $prefix . 'PROJECT_DIR';
     return constant($name);
 }
 
-/**
- * @return string
- */
 public function getProjectDir(): string {
     return constant('ACME_PROJECT_DIR');
 }
@@ -555,9 +531,6 @@ public function getProjectDir(): string {
 
 Хорошо:
 ```php
-/**
- * @return string
- */
 public function getProjectDir(): string {
     return ACME_PROJECT_DIR;
 }
@@ -648,7 +621,7 @@ function someMethod() {
     storeUser($user, $projectNotificationIsEnabled);
 }
 
-function storeUser(User $user, $isNotificationEnabled) {
+function storeUser(User $user, bool $isNotificationEnabled) {
     // ...
     if ($isNotificationEnabled) {
         notify('new user');
@@ -689,11 +662,6 @@ namespace Service;
 
 class ArrayUtils {
 
-    /**
-     * @param array $array1
-     * @param array $array2
-     * @return array
-     */
     public function mergeArrays(array $array1, array $array2): array {
         return array_merge($array1, $array2);
     }
@@ -962,7 +930,7 @@ $user = new Entity\User();
 
 ## **Работа с методами**
 
-### 📖 Должна быть использована максимально возможная типизация для вашей версии PHP. Все параметры и их типы должны быть описаны в PHPDoc. Возвращаемое значение тоже.
+### 📖 Должна быть использована максимально возможная типизация для вашей версии PHP. Все параметры и их типы должны быть описаны в объявлении метода либо в PHPDoc. Возвращаемое значение тоже.
 
 Плохо:
 ```php
@@ -980,6 +948,11 @@ function storeUser($id, $name, $tags = []) {
 Хорошо:
 ```php
 // для PHP 7.1
+function makeCoffee(string $type, int $volume): Coffee {
+	// ...
+}
+
+// в PHP 7.1 тип элементов массива в объявлении метода указать нельзя, поэтому добавляем PHPDoc
 /**
  * @param int $id
  * @param string $name
@@ -1063,41 +1036,6 @@ public function getTimeZonesList($sortBy = null) {
 }
 ```
 
-
-### 📖 В PHPDoc в возвращаемом значении не надо указывать `void` и `null`, если метод ничего не возвращает.
-
-Плохо:
-```php
-/**
- * @param string $controllerName
- * @return void
- */
-public function runApplication(string $controllerName) {
-    // ...
-}
-
-/**
- * @return null
- */
-public function run() {
-    // ...
-}
-```
-
-Хорошо:
-```php
-/**
- * @param string $controllerName
- */
-public function runApplication(string $controllerName) {
-    // ...
-}
-
-public function run() {
-    // ...
-}
-```
-
 ### 📖 Название метода должно начинаться с глагола и соответствовать правилам именования переменных.
 
 Плохо:
@@ -1159,7 +1097,7 @@ class User {
 
 Плохо:
 ```php
-public function validateRequestData(array $requestData) {
+public function validateRequestData(array $requestData): bool {
     if (!array_key_exists('key', $requestData)) {
         return false;
     }
@@ -1170,7 +1108,7 @@ public function validateRequestData(array $requestData) {
 
 Хорошо:
 ```php
-public function validateRequestData(array $requestData) {
+public function validateRequestData(array $requestData): void {
     if (!array_key_exists('key', $requestData)) {
         throw new ValidationError('Field "key" not found');
     }
@@ -1229,10 +1167,7 @@ public function filter($name, $operator, $value) // ...$service->filter("id", "=
 
 Хорошо:
 ```php
-/**
- * @param string $projectName
- */
-public function someMethod($projectName = null) {
+public function someMethod(string $projectName = null) {
     // ...
 }
 ```
@@ -1256,7 +1191,7 @@ function loadUser() {
 
 Хорошо:
 ```php
-function loadUser() {
+function loadUser(): User {
     if ($someCondition) {
         $user = new User();
         $user->id = 1;
@@ -1281,7 +1216,10 @@ function loadUsers() {
 
 Хорошо:
 ```php
-function loadUsers() {
+/**
+ * @return User[]
+ */
+function loadUsers(): array {
     if ($someCondition) {
         return [];
     }
@@ -1309,10 +1247,7 @@ function getObjectCategories($object) {
     return parseCategories($object->categories);
 }
 
-/**
- * для PHP 7.1
- * @return array|null
- */
+// для PHP 7.1
 function getObjectCategories($object): ?array {
     if ($object->categories === null) {
         return null;
@@ -1328,24 +1263,18 @@ function getObjectCategories($object): ?array {
 
 Плохо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     $users = [];
     // ... много кода, изменяющего переменную $users
-    foreach ($data as $item) {
-        $users[] = new User();
-    }
     return $users;
 }
 ```
 
 Хорошо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     $result = [];
     // ... много кода, изменяющего переменную $result
-    foreach ($data as $item) {
-        $result[] = new User();
-    }
     return $result;
 }
 ```
@@ -1355,7 +1284,7 @@ function loadUsers() {
 
 Плохо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     if ($connectionError !== null) {
         return []; // потеряли ошибку, никто не узнает о проблемах с подключением
     }
@@ -1370,7 +1299,7 @@ function loadUsers() {
 
 Хорошо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     if ($connectionError !== null) {
         throw new Exception\ConnectionError();
     }
@@ -1388,10 +1317,7 @@ function loadUsers() {
 
 Плохо:
 ```php
-/**
- * @return int
- */
-public function someMethod() {
+public function someMethod(): int {
     $isValid = $this->_someCheck();
     if ($isValid) {
         $tmp = 0;
@@ -1414,10 +1340,9 @@ public function someMethod() {
 Хорошо:
 ```php
 /**
- * @return int
  * @throws \Exception
  */
-public function someMethod() {
+public function someMethod(): int {
     $result = 0;
      
     $isValid = $this->_someCheck();
@@ -1468,7 +1393,7 @@ abstract class AbstractApplication {
 }
 ```
 
-### 📖 Все свойства класса по умолчанию должны быть private
+### 📖 Все свойства и константы класса по умолчанию должны быть private
 Если свойство используется наследниками класса, то оно объявляется `protected`. Если используется сторонними классами, тогда `public`.
 
 Плохо:
@@ -1497,9 +1422,6 @@ abstract class Loader {
      */
     private $_cachedData = [];
 
-    /**
-     * @return array
-     */
     public function getData(): array {
         return $this->_cachedData;
     }
@@ -1508,9 +1430,6 @@ abstract class Loader {
         $this->_cachedData = $this->_load();
     }
 
-    /**
-     * @return array
-     */
     abstract protected function _load(): array;
 }
 ```
@@ -1592,17 +1511,11 @@ class SomeObject {
      */ 
     private $_id;
   
-    /**
-     * @param int $id
-     */
-    public function __construct($id) {
+    public function __construct(int $id) {
         $this->_id = $id;
     }
   
-    /**
-     * @var int
-     */
-    public function id() {
+    public function id(): int {
         return $this->_id;
     }
 }
@@ -1653,7 +1566,7 @@ public function deleteApprovedUsers() {
     }
 }
 
-public function loadApprovedUsers() {
+public function loadApprovedUsers(): array {
     $users = $repository->loadUsers();
     array_filter($users, function($user) {
         return $user->is_approved;
@@ -1666,7 +1579,7 @@ public function loadApprovedUsers() {
 
 Хорошо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     $result = $repository->loadUsers();
     // hack: status field was removed from storage 
     foreach ($result as $user) {
@@ -1684,7 +1597,7 @@ function loadUsers() {
 /**
  * https://en.wikipedia.org/wiki/Quicksort
  */
-function quickSort(array $arr) {
+function quickSort(array $arr): array {
     // ...
 }
 
@@ -1700,7 +1613,7 @@ function generateRandomMaze() {
 
 Хорошо:
 ```php
-function loadUsers() {
+function loadUsers(): array {
     $result = $repository->loadUsers();
     // @todo: delete the hack when field will be restored
     // hack: status field was removed from storage
@@ -1727,7 +1640,7 @@ namespace Service\Facebook;
 use Exception;
 use FacebookAds;
 
-public function function requestData() {
+public function requestData() {
     // ...
     try {
         $objects = $facebookAds->requestData($params);
@@ -1744,13 +1657,10 @@ public function function requestData() {
 ```php
 interface HumanReadableInterface {
     
-    /**
-     * @return string
-     */
     public function getUserMessage(): string;
 }
 
-public function handleException(\Throwable $exception) {
+public function handleException(\Throwable $exception): void {
     if ($exception instanceof HumanReadableInterface) {
         echo $exception->getUserMessage();
         return;
@@ -2087,7 +1997,7 @@ $contact = $this->loadContactByPhone() ?: $this->loadContactByEmail() ?: $this->
 
 Плохо:
 ```php
-public function isEmailAddressData() {
+public function isEmailAddressData(): array {
     return [
         ['test@test.ru',            true ],
         // ...
@@ -2097,7 +2007,7 @@ public function isEmailAddressData() {
 
 Хорошо:
 ```php
-public function isEmailAddressData() {
+public function isEmailAddressData(): array {
     return [
         //    email               isValid
         ['test@test.ru',            true ],
