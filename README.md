@@ -1036,41 +1036,6 @@ public function getTimeZonesList($sortBy = null) {
 }
 ```
 
-
-### 📖 В PHPDoc в возвращаемом значении не надо указывать `void` и `null`, если метод ничего не возвращает.
-
-Плохо:
-```php
-/**
- * @param string $controllerName
- * @return void
- */
-public function runApplication(string $controllerName) {
-    // ...
-}
-
-/**
- * @return null
- */
-public function run() {
-    // ...
-}
-```
-
-Хорошо:
-```php
-/**
- * @param string $controllerName
- */
-public function runApplication(string $controllerName) {
-    // ...
-}
-
-public function run() {
-    // ...
-}
-```
-
 ### 📖 Название метода должно начинаться с глагола и соответствовать правилам именования переменных.
 
 Плохо:
