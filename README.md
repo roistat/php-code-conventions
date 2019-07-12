@@ -952,7 +952,7 @@ function makeCoffee(string $type, int $volume): Coffee {
 	// ...
 }
 
-// тип элементов массива в объявлении метода указать нельзя, поэтому добавляем PHPDoc
+// в PHP 7.1 тип элементов массива в объявлении метода указать нельзя, поэтому добавляем PHPDoc
 /**
  * @param int $id
  * @param string $name
