@@ -133,7 +133,7 @@ $urlParts = $urlService->parseUrl($url);
 ### 📖 Вместо отсутствующего скалярного значения используется null
 0 и пустую строку нельзя использовать в качестве показателя отсутствия значения.
 ```php
-function sendEmail(string $title, string $message = null, string $date = null): void {
+function sendEmail(string $title, ?string $message = null, ?string $date = null): void {
     // ...
 }
 
@@ -1012,30 +1012,6 @@ public function someMethod(array $users, Project $project, int $timestmap): Foo 
 }
 ```
 
-### 📖 В PHPDoc у аргументов не надо указывать `null`
-
-Плохо:
-```php
-/**
-* @param string|null $sortBy
-* @return \DateTimeZone[]
-*/
-public function getTimeZonesList($sortBy = null) {
-    // ...
-}
-```
-
-Хорошо:
-```php
-/**
-* @param string $sortBy
-* @return \DateTimeZone[]
-*/
-public function getTimeZonesList($sortBy = null) {
-    // ...
-}
-```
-
 ### 📖 Название метода должно начинаться с глагола и соответствовать правилам именования переменных.
 
 Плохо:
@@ -1167,7 +1143,7 @@ public function filter($name, $operator, $value) // ...$service->filter("id", "=
 
 Хорошо:
 ```php
-public function someMethod(string $projectName = null) {
+public function someMethod(?string $projectName = null) {
     // ...
 }
 ```
