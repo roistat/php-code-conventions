@@ -1976,10 +1976,10 @@ public function isEmailAddressData(): array {
 ```php
 public function isEmailAddressData(): array {
     return [
-        //    email         isValid
-        ['test@test.ru',    true],
-        ['@test.ru',        false],
-        ['invalidEmail',    false],
+        //    email               isValid
+        ['test@test.ru',            true],
+        ['@test.ru',                false],
+        ['invalidEmail',            false],
         // ...
     ]
 }
