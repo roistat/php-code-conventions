@@ -1149,6 +1149,7 @@ function f(int $number = null) {}
 Хорошо:
 ```php
 function f(?int $number = null) {}
+function f(?int $number) {}
 ```
 
 **[⬆ наверх](#Содержание)**
