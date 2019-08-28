@@ -677,18 +677,31 @@ public function someMethod() {
 
 Плохо:
 ```php
-function getProjectKey(array $requestData) {
-    return isset($requestData['project_key']) ? $requestData['project_key'] : null;
+function processRequestData(array $requestData) {
+    $data = [];
+    if (isset($requestData['project_key'])) {
+    	// some logic
+    }
+    return $data;
 }
 ```
 
 Хорошо:
 ```php
-function getProjectKey(array $requestData) {
-    if (!array_key_exists('project_key', $requestData)) {
-        return null;
+function processRequestData(array $requestData) {
+    $data = [];
+    if (array_key_exists('project_key', $requestData)) {
+    	// some logic
     }
-    return $requestData['project_key'];
+    return $data;
+}
+```
+
+Исключение:
+Допустимо использовать `isset`, в том числе её сокращенный вариант `??`, если необходимо просто получить содержимое с учетом значения по-умолчанию.
+```php
+function getProjectKey(array $requestData) {
+    return $requestData['project_key'] ?? null;
 }
 ```
 
