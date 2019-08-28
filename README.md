@@ -680,7 +680,7 @@ public function someMethod() {
 function processRequestData(array $requestData) {
     $data = [];
     if (isset($requestData['project_key'])) {
-    	// some logic
+    	// ...
     }
     return $data;
 }
@@ -691,7 +691,7 @@ function processRequestData(array $requestData) {
 function processRequestData(array $requestData) {
     $data = [];
     if (array_key_exists('project_key', $requestData)) {
-    	// some logic
+    	// ...
     }
     return $data;
 }
@@ -973,6 +973,15 @@ function makeCoffee(string $type, int $volume): Coffee {
  * @return User|null
  */
 function storeUser(int $id, string $name, array $tags = []): ?User {
+    // ...
+}
+
+// если метод возвращает смешанный тип данных, то необходимо явно это указать
+/**
+ * @param callable $callback
+ * @return mixed
+ */
+function execute(callable $callback) {
     // ...
 }
 
