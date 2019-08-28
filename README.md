@@ -697,7 +697,7 @@ function processRequestData(array $requestData) {
 }
 ```
 
-Исключение:
+Исключение:  
 Допустимо использовать `isset`, в том числе её сокращенный вариант `??`, если необходимо просто получить содержимое с учетом значения по-умолчанию.
 ```php
 function getProjectKey(array $requestData) {
