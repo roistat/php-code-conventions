@@ -696,9 +696,8 @@ function processRequestData(array $requestData) {
     return $data;
 }
 ```
-
-Исключение:  
-Допустимо использовать `isset`, в том числе его сокращенный вариант `??`, с явным указанием дефолтного значения.
+ 
+Допустимо использовать сокращенный вариант `??`, с явным указанием дефолтного значения.
 ```php
 function getProjectKey(array $requestData) {
     return $requestData['project_key'] ?? null;
