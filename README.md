@@ -677,18 +677,30 @@ public function someMethod() {
 
 Плохо:
 ```php
-function getProjectKey(array $requestData) {
-    return isset($requestData['project_key']) ? $requestData['project_key'] : null;
+function processRequestData(array $requestData) {
+    $data = [];
+    if (isset($requestData['project_key'])) {
+    	// ...
+    }
+    return $data;
 }
 ```
 
 Хорошо:
 ```php
-function getProjectKey(array $requestData) {
-    if (!array_key_exists('project_key', $requestData)) {
-        return null;
+function processRequestData(array $requestData) {
+    $data = [];
+    if (array_key_exists('project_key', $requestData)) {
+    	// ...
     }
-    return $requestData['project_key'];
+    return $data;
+}
+```
+ 
+Допустимо использовать сокращенный вариант `??`, с явным указанием дефолтного значения.
+```php
+function getProjectKey(array $requestData) {
+    return $requestData['project_key'] ?? null;
 }
 ```
 
@@ -960,6 +972,15 @@ function makeCoffee(string $type, int $volume): Coffee {
  * @return User|null
  */
 function storeUser(int $id, string $name, array $tags = []): ?User {
+    // ...
+}
+
+// если метод возвращает смешанный тип данных, то необходимо явно это указать
+/**
+ * @param callable $callback
+ * @return mixed
+ */
+function execute(callable $callback) {
     // ...
 }
 
