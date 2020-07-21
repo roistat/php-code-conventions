@@ -646,16 +646,6 @@ function storeUser(User $user) {
 }
 ```
 
-Плохо:
-```php
-class SchrodingerCat {
-    private $_state;
-    public function __construct(string $state) {
-        $this->_state = $state;
-    }
-}
-```
-
 Хорошо:
 ```php
 class SchrodingerCat {
