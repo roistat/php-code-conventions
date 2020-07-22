@@ -646,7 +646,6 @@ function storeUser(User $user) {
 }
 ```
 
-Хорошо:
 ```php
 class SchrodingerCat {
     private $_isAlive;
