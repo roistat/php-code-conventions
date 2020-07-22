@@ -644,9 +644,8 @@ function someMethod() {
 function storeUser(User $user) {
     // ...
 }
-```
 
-```php
+// Использование флага в конструкторе для инициализации свойства логического типа
 class SchrodingerCat {
     private $_isAlive;
     public function __construct(bool $isAlive) {
