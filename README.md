@@ -788,7 +788,7 @@ $string = "Some 'string'";
 $string = "\tSome string\n";
 ```
 
-### 📖 Instead of unnecessary concatenation, we use variable substitution in double quotes using curly braces
+### 📖 Вместо лишней конкатенации используем подстановку переменных в двойных кавычках с помощью фигурных скобок
 
 Плохо:
 ```php
