@@ -37,11 +37,11 @@
 This document contains code writing rules (Code Conventions) in the company Roistat. We have got a lot of experience in developing complex projects, with which we decided to share with others. You can take this document as is or use it as the basis for your own Code Conv.
 
 Work on English translation is in progress. You can help us a lot if you make pull request.
-Здесь всегда находится актуальная версия нашего Code Conv, так как мы ссылаемся на него при проведении наших Code Review.
+Here you can always find an up to date version of our Code Conv, as we are regularly referring to it in our Code Review.
 
 О нашем опыте использования Code Conv вы можете прочитать в [статье на Хабре](https://habrahabr.ru/company/roistat/blog/352762/).
 
-Code Conv — это правила, которые нужно соблюдать при написании любого кода. Мы различаем Code Style и Code Conv. Для нас Code Style — это внешний вид кода. То есть расстановка отступов, запятых, скобок и прочего. А Code Conv — это смысловое Summary кода. Правильные алгоритмы действий, правильные по смыслу названия переменных и методов, правильная композиция кода. Соблюдение Code Style легко проверяется автоматикой. А вот проверить соблюдение Code Conv в большинстве случаев может только человек.
+Code Conv — is a set of rules to follow when writing any kind of code. We treat Code Style and Code Conv separately. For us Code Style is purely visual side of code, e.g. placement of tabs, comas, parentheses, and others. Code Conv on the other hand is meaningful Summary of code, e.g. correct sequences of actions, fitting and meaningful variable and method names, correct overall code composition. Code Style is pretty easy to evaluate automatically, but checking Code Conv, in most cases, is a task only human can do.
 
 Обратите внимание: Code Style в примерах может отличаться от Code Style вашего проекта. Придерживаться надо тому Code Style, который принят у вас. Code Conv не об этом. 
 
