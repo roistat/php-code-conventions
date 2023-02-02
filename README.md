@@ -2041,7 +2041,7 @@ public function isEmailAddressData(): array {
 
 // Или:
 
-public function sendData(): \Generator {
+public function isEmailAddressData(): \Generator {
     yield 'valid' => ['email' => 'test@test.ru', 'isValid' => true];
     yield 'invalid with @' => ['email' => '@test.ru',     'isValid' => false];
 }
