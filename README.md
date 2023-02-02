@@ -2038,6 +2038,13 @@ public function isEmailAddressData(): array {
         // ...
     ]
 }
+
+// Или:
+
+public function sendData(): \Generator {
+    yield 'valid' => ['email' => 'test@test.ru', 'isValid' => true];
+    yield 'invalid with @' => ['email' => '@test.ru',     'isValid' => false];
+}
 ```
 
 **[⬆ наверх](#Содержание)**
